@@ -41,16 +41,37 @@ def open_game(username):
 
 
 
+    window = tk.Tk()
+    window.title("Snake game")
+    window.resizable(False, False)
 
+    label = tk.Label(window, text="Score: {}".format(score), font=('consolas', 40))
+    label.pack()
 
+    canvas = tk.Canvas(window, bg=background_color, height=game_height, width=game_width)
+    canvas.pack()
 
+    window.update()
 
+    set_window_geometry(window)
 
+    window.bind("<KeyPress-Left>", lambda event: change_direction("left"))
+    window.bind("<KeyPress-Right>", lambda event: change_direction("right"))
+    window.bind("<KeyPress-Up>", lambda event: change_direction("up"))
+    window.bind("<KeyPress-Down>", lambda event: change_direction("down"))
 
+    snake = Snake()
+    food = Food(canvas)
 
+    next_turn(snake, food)
 
+    menu = tk.Menu(window)
+    window.config(menu=menu)
+    high_scores_menu = tk.Menu(menu, tearoff=False)
+    menu.add_cascade(label="Menu", menu=high_scores_menu)
+    high_scores_menu.add_command(label="High Score", command=show_high_scores)
 
-
+    window.mainloop()
 
 def start_game():
     username = entry.get()
