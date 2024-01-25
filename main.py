@@ -70,14 +70,63 @@ def open_game(username):
         else:
             window.after(speed, next_turn, snake, food)
 
+    def change_direction(new_direction):
+        global direction
+        if new_direction == "left" and direction != "right":
+            direction = new_direction
+        elif new_direction == "right" and direction != "left":
+            direction = new_direction
+        elif new_direction == "up" and direction != "down":
+            direction = new_direction
+        elif new_direction == "down" and direction != "up":
+            direction = new_direction
 
+    def check_collisions(snake):
+        x, y = snake.coordinates[0]
 
+        if x < 0 or x >= game_width:
+            return True
+        elif y < 0 or y >= game_height:
+            return True
 
+        for body_part in snake.coordinates[1:]:
+            if x == body_part[0] and y == body_part[1]:
+                print("GAME OVER")
+                return True
 
+        return False
 
+    def game_over():
+        canvas.delete(tk.ALL)
+        canvas.create_text(game_width / 2, game_height / 2, font=("consolas", 70), text="GAME OVER", fill="red",
+                           tag="gameover")
+        canvas.create_text(game_width / 2, game_height / 1.5 + 50, font=("consolas", 40),
+                               text="Player: {}\nScore: {}".format(username, score), fill="red", tag="gameover")
 
+    def set_window_geometry(window):
+        window_width = int(window.winfo_width())
+        window_height = int(window.winfo_height())
+        screen_width = int(window.winfo_screenwidth())
+        screen_height = int(window.winfo_screenheight())
 
+        x = int(screen_width / 2) - int(window_width / 2)
+        y = int(screen_height / 2) - int(window_height / 2)
+        window.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
+    def show_high_scores():
+        high_scores_window = tk.Toplevel(window)
+        high_scores_window.title("High Scores")
+        high_scores_window.geometry("300x200")
+
+        scores_label = tk.Label(high_scores_window, text="High Scores", font=('consolas', 18, 'bold'))
+        scores_label.pack()
+
+        
+        high_scores = ["Player1: 10", "Player2: 8", "Player3: 5"]
+
+        for score in high_scores:
+            score_label = tk.Label(high_scores_window, text=score, font=('consolas', 14))
+            score_label.pack()
 
     window = tk.Tk()
     window.title("Snake game")
